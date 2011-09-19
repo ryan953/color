@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+	<title>Color Library</title>
+	<style>
+	#testarea {
+		margin:1em;
+		padding:1em;
+		background:#ccc;
+		float:left;
+	}
+	p {
+		width:11em;
+		height:40px;
+		line-height:40px;
+		text-align:right;
+		float:left;
+		display:inline-block;
+		margin:0;
+		
+	}
+	ul {
+		display:block;
+		height:40px;
+		margin:0;
+		padding:5px 0 5px 11em;
+	}
+	ul.white { background:#fff; }
+	ul.black { background:#000; color:white; }
+	ul.red { background:#f00; }
+	ul.green { background:#0f0; }
+	ul.blue { background:#00f; }
+	ul.cyan { background:#0ff; }
+	ul.magenta { background:#f0f; }
+	ul.yellow { background:#ff0; }
+	li {
+		margin:0 5px;
+		float:left;
+		list-style:none;
+		width:40px;
+		height:40px;
+		line-height:40px;
+		text-align:center;
+		border:1px solid transparent;
+		box-sizing:border-box;
+		-webkit-user-select: none;
+	}
+	</style>
+</head>
+<body>
+
+<div id="testarea"></div>
+	
+<script src="./lib/jquery.1.6.4.js"></script>
+<script src="./colors.js"></script>
+
+<script>
+var LI_LENGTH = 10;
+
+$(document).ready(setupTestArea);
+
+function setupTestArea() {
+	var area = $('#testarea');
+	area.empty();
+	
+	var colors = {
+		'black': '#000',
+		'black_333': '#333',
+		'black_666': '#666',
+		'black_999': '#999',
+		'black_ccc': '#ccc',
+		'white': '#fff',
+		
+		'red': '#f00',
+		'green': '#0f0',
+		'blue': '#00f',
+		'cyan': '#0ff',
+		'magenta': '#f0f',
+		'yellow':'#ff0',
+	};
+	for(var name in colors) {
+		var col = new Color(colors[name]);
+		
+		area.append( getUL(colors[name], 'rgba(255, 255, 255, 0.N)').find('li').each(rgba_lighter).end() );
+		area.append( getUL(colors[name], 'Color.brighten(N)').find('li').each(lighter(col)).end() );
+		
+		area.append( getUL(colors[name], 'rgba(0, 0, 0, 0.N)').find('li').each(rgba_darker).end() );
+		area.append( getUL(colors[name], 'Color.darken(N)'  ).find('li').each(darker(col) ).end() );
+	}
+}
+
+function getUL(bgColor, message) {
+	var ul = $('<ul>').css({backgroundColor:bgColor});
+	for (var i = 0; i <= LI_LENGTH; i++) {
+		ul.append('<li>'+i+'</li>');
+	}
+	return ul.before('<p>'+message+'</p>');
+}
+
+function rgba_lighter(step) {
+	var percent = step / (LI_LENGTH-1);
+	$(this).css({ backgroundColor: 'rgba(255, 255, 255, ' + percent + ')' });
+}
+
+function rgba_darker(step) {
+	var percent = step / (LI_LENGTH-1);
+	$(this).css({ backgroundColor: 'rgba(0, 0, 0, ' + percent + ')' });
+}
+
+function percent(step) {
+	return step / LI_LENGTH * 100;
+}
+
+function lighter(base) {
+	return function (step) {
+		var hex = base.brighten(percent(step)).hex();
+		$(this).attr('style', 'background-color:'+hex+';');
+	}
+}
+function darker(base) {
+	return function(step) {
+		var hex = base.darken(percent(step)).hex();
+		$(this).attr('style', 'background-color:'+hex+';');
+	}
+}
+
+
+</script>
+
+</body>
+</html>
+
+

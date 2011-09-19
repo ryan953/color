@@ -1,0 +1,213 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<link rel="stylesheet" href="./lib/qunit.css" type="text/css" media="screen" />
+
+<script src="./lib/jquery.1.6.4.js"></script>
+<script src="./lib/qunit.js"></script>
+
+<script src="./colors.js"></script>
+
+<script>
+var rgb_hex_test_vals = [
+	['#000000', {r:0,   g:0,   b:0  }],
+	['#ff0000', {r:255, g:0,   b:0  }],
+	['#00ff00', {r:0,   g:255, b:0  }],
+	['#0000ff', {r:0,   g:0,   b:255}],
+	['#1a1a1a', {r:25.5,g:25.5,b:25.5}],
+	['#4d4d4d', {r:76.5,g:76.5,b:76.5}],
+	['#808080', {r:127.5,g:127.5,b:127.5}],
+	['#b3b3b3', {r:178.5,g:178.5,b:178.5}],
+	['#e6e6e6', {r:229.5,g:229.5,b:229.5}],
+];
+var rgb_hsl_test_vals = [
+	[{r:36,  g:229,  b:36 },{h:120, s:79,  l:52 }],
+	
+	[{r:0,   g:0,   b:0  }, {h:0,   s:0,   l:0  }],
+	[{r:51,  g:51,  b:51 }, {h:0,   s:0,   l:20 }],
+	[{r:102, g:102, b:102}, {h:0,   s:0,   l:40 }],
+	[{r:153, g:153, b:153}, {h:0,   s:0,   l:60 }],
+	[{r:204, g:204, b:204}, {h:0,   s:0,   l:80 }],
+	[{r:255, g:255, b:255}, {h:0,   s:0,   l:100}],
+	
+	[{r:255, g:0,   b:0  }, {h:0,   s:100, l:50 }],
+	[{r:0,   g:255, b:0  }, {h:120, s:100, l:50 }],
+	[{r:0,   g:0,   b:255}, {h:240, s:100, l:50 }],
+];
+
+
+
+$(document).ready(function () {
+	module('Color::validation');
+	test('Color.format()', function() {
+		var vals = [
+			[{r:25.5,  g:25.5,  b:25.5},  {r:26,  g:26,  b:26} ],
+			[{r:76.5,  g:76.5,  b:76.5},  {r:77,  g:77,  b:77} ],
+			[{r:127.5, g:127.5, b:127.5}, {r:128, g:128, b:128}],
+			[{r:178.5, g:178.5, b:178.5}, {r:179, g:179, b:179}],
+			[{r:229.5, g:229.5, b:229.5}, {r:230, g:230, b:230}],
+		];
+		vals.forEach(function(val) {
+			deepEqual(Color.format(val[0]), val[1]);
+		});
+	});
+	
+	test('isRGB passes', function() {
+		var vals = [
+			{r:0, g:0, b:0},
+			{r:255, g:255, b:255},
+			{r:100, g:100, b:100, 'hello':'world'},
+		];
+		vals.forEach(function(val) {
+			ok(Color.isRGB(val), JSON.stringify(val) + ' is RGB');
+		});
+	});
+	
+	test('isRGB fails', function() {
+		var vals = [
+			null, false, true, {}, [],
+			{r:-1, g:0, b:0},
+			{r:0, g:-1, b:0},
+			{r:0, g:0, b:-1},
+			1, 2, '', 'hello',
+			{r:0}, {g:0}, {b:0},
+			{r:0, g:0}, {g:0, b:0}, {r:0, b:0},
+		];
+		vals.forEach(function(val) {
+			ok(!Color.isRGB(val), JSON.stringify(val) + ' is not rgb');
+		});
+	});
+	
+	test('isHEX passes', function() {
+		var vals = [
+			'000000',
+			'ff0000', '00ff00', '0000ff',
+			'FF0000', '00FF00', '0000FF',
+			'000000',
+			'000',
+			'ffffff', 'ff00ff', '00ff00',
+			'fba',
+			'acbdef',
+			'FFFFFF', 'FF00FF', '00FF00',
+			'FBA',
+			'ACBDEF',
+		];
+		
+		vals.forEach(function(val) {
+			ok(Color.isHEX('#' + val), JSON.stringify('#' + val) + ' is HEX');
+			ok(Color.isHEX(val), JSON.stringify(val) + ' is HEX');
+		});
+	});
+	
+	test('isHEX fails', function() {
+		var vals = [
+			null, false, true,
+			0, 10, [], {}, '',
+			'', '#', '####000000',
+			'00#0000', 'hello world',
+			'ryan12', '12', '12g', 'ggg',
+		];
+		
+		vals.forEach(function(val) {
+			ok(!Color.isHEX(val), JSON.stringify(val) + ' is not hex');
+		});
+	});
+	
+	test('isHSL', function() {
+		// do tests to make sure this correct
+		// h in range(0, 360)
+		// s in range(0, 100)
+		// l in range(0, 100)
+	});
+	
+	
+	module('Color::conversion');
+	test('Color.RGBtoHEX()', function() {
+		rgb_hex_test_vals.forEach(function(val) {
+			equals(Color.RGBtoHEX(val[1]), val[0]);
+		});
+	});
+	
+	test('Color.HEXtoRGB()', function() {
+		rgb_hex_test_vals.forEach(function(val) {
+			deepEqual(Color.HEXtoRGB(val[0]), Color.format(val[1]));
+		});
+	});
+	
+	test('Color.RGBtoHSL', function() {
+		rgb_hsl_test_vals.forEach(function(val) {
+			//console.debug(val);
+			deepEqual(Color.RGBtoHSL(val[0]), val[1]);
+		});
+	});
+	
+	test('Color.HSLtoRGB', function() {
+		rgb_hsl_test_vals.forEach(function(val) {
+			deepEqual(Color.HSLtoRGB(val[1]), val[0]);
+		});
+	});
+	
+	
+	module('Color Class');
+	test('new Color({rgb}) to HEX', function() {
+		rgb_hex_test_vals.forEach(function(val) {
+			var hex = val[0], rgb = val[1], col = new Color(rgb);
+			equals(col.hex(), hex);
+			deepEqual(col.rgb(), rgb);
+		});
+	});
+	
+	test('new Color({hex}) to RGB', function() {
+		rgb_hex_test_vals.forEach(function(val) {
+			var hex = val[0], rgb = val[1], col = new Color(hex);
+			equals(col.hex(), hex);
+			deepEqual(col.rgb(), Color.format(rgb));
+		});
+	});
+	
+	test('new Color({rgb}) to HSL', function() {
+		rgb_hsl_test_vals.forEach(function(val) {
+			var rgb = val[0], hsl = val[1], col = new Color(rgb);
+			deepEqual(col.hsl(), hsl);
+			deepEqual(col.rgb(), rgb);
+		});
+	});
+	
+	test('new Color({hsl}) to RGB', function() {
+		rgb_hsl_test_vals.forEach(function(val) {
+			var rgb = val[0], hsl = val[1], col = new Color(hsl);
+			deepEqual(col.hsl(), hsl);
+			deepEqual(col.rgb(), rgb);
+		});
+	});
+	
+	test('new Color.brighten({percent})', function() {
+		var col = new Color('#ff0000');
+		for(var i = 0; i<= 10; i++) {
+			var bright = col.brighten(10 * i);
+			//console.debug( bright.hex() );
+			ok( bright.hex() );
+		}
+	});
+	
+	test('new Color.darken({percent})', function() {
+		var col = new Color('#ff0000');
+		for(var i = 0; i <= 10; i++) {
+			var dark = col.darken(10 * i);
+			//console.debug( dark.hex() );
+			ok( dark.hex() );
+		}
+	});
+});
+</script>
+
+</head>
+<body>
+	<h1 id="qunit-header">Color Tests</h1>
+	<h2 id="qunit-banner"></h2>
+	<h2 id="qunit-userAgent"></h2>
+	<div id="qunit-testrunner-toolbar"></div>
+	<ol id="qunit-tests"></ol>
+	<div id="qunit-fixture">test markup, will be hidden</div>
+</body>
+</html>
