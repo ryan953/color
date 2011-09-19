@@ -61,7 +61,7 @@ function Color(color) {
 	Color.prototype.darken = function(amount) {
 		amount /= 100;
 		var hsl = this.hsl();
-		hsl.l -= (100 - hsl.l) * amount;
+		hsl.l -= hsl.l * amount;
 		hsl.l = Math.min(100, Math.max(0, hsl.l));
 		return new Color(hsl);
 	};
