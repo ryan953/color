@@ -22,14 +22,14 @@ var rgb_hex_test_vals = [
 ];
 var rgb_hsl_test_vals = [
 	[{r:36,  g:229,  b:36 },{h:120, s:79,  l:52 }],
-	
+
 	[{r:0,   g:0,   b:0  }, {h:0,   s:0,   l:0  }],
 	[{r:51,  g:51,  b:51 }, {h:0,   s:0,   l:20 }],
 	[{r:102, g:102, b:102}, {h:0,   s:0,   l:40 }],
 	[{r:153, g:153, b:153}, {h:0,   s:0,   l:60 }],
 	[{r:204, g:204, b:204}, {h:0,   s:0,   l:80 }],
 	[{r:255, g:255, b:255}, {h:0,   s:0,   l:100}],
-	
+
 	[{r:255, g:0,   b:0  }, {h:0,   s:100, l:50 }],
 	[{r:0,   g:255, b:0  }, {h:120, s:100, l:50 }],
 	[{r:0,   g:0,   b:255}, {h:240, s:100, l:50 }],
@@ -200,7 +200,7 @@ $(document).ready(function () {
 			deepEqual(Color.format(val[0]), val[1]);
 		});
 	});
-	
+
 	test('isRGB passes', function() {
 		var vals = [
 			{r:0, g:0, b:0},
@@ -211,7 +211,7 @@ $(document).ready(function () {
 			ok(Color.isRGB(val), JSON.stringify(val) + ' is RGB');
 		});
 	});
-	
+
 	test('isRGB fails', function() {
 		var vals = [
 			null, false, true, {}, [],
@@ -226,7 +226,7 @@ $(document).ready(function () {
 			ok(!Color.isRGB(val), JSON.stringify(val) + ' is not rgb');
 		});
 	});
-	
+
 	test('isHEX passes', function() {
 		var vals = [
 			'000000',
@@ -241,13 +241,13 @@ $(document).ready(function () {
 			'FBA',
 			'ACBDEF',
 		];
-		
+
 		vals.forEach(function(val) {
 			ok(Color.isHEX('#' + val), JSON.stringify('#' + val) + ' is HEX');
 			ok(Color.isHEX(val), JSON.stringify(val) + ' is HEX');
 		});
 	});
-	
+
 	test('isHEX fails', function() {
 		var vals = [
 			null, false, true,
@@ -256,46 +256,46 @@ $(document).ready(function () {
 			'00#0000', 'hello world',
 			'ryan12', '12', '12g', 'ggg',
 		];
-		
+
 		vals.forEach(function(val) {
 			ok(!Color.isHEX(val), JSON.stringify(val) + ' is not hex');
 		});
 	});
-	
+
 	test('isHSL', function() {
 		// do tests to make sure this correct
 		// h in range(0, 360)
 		// s in range(0, 100)
 		// l in range(0, 100)
 	});
-	
-	
+
+
 	module('Color::conversion');
 	test('Color.RGBtoHEX()', function() {
 		rgb_hex_test_vals.forEach(function(val) {
 			equals(Color.RGBtoHEX(val[1]), val[0]);
 		});
 	});
-	
+
 	test('Color.HEXtoRGB()', function() {
 		rgb_hex_test_vals.forEach(function(val) {
 			deepEqual(Color.HEXtoRGB(val[0]), Color.format(val[1]));
 		});
 	});
-	
+
 	test('Color.RGBtoHSL', function() {
 		rgb_hsl_test_vals.forEach(function(val) {
 			deepEqual(Color.RGBtoHSL(val[0]), val[1]);
 		});
 	});
-	
+
 	test('Color.HSLtoRGB', function() {
 		rgb_hsl_test_vals.forEach(function(val) {
 			deepEqual(Color.HSLtoRGB(val[1]), val[0]);
 		});
 	});
-	
-	
+
+
 	module('Color Class');
 	test('new Color({rgb}) to HEX', function() {
 		rgb_hex_test_vals.forEach(function(val) {
@@ -304,7 +304,7 @@ $(document).ready(function () {
 			deepEqual(col.rgb(), rgb);
 		});
 	});
-	
+
 	test('new Color({hex}) to RGB', function() {
 		rgb_hex_test_vals.forEach(function(val) {
 			var hex = val[0], rgb = val[1], col = new Color(hex);
@@ -318,7 +318,7 @@ $(document).ready(function () {
 			deepEqual(col.rgb(), Color.format(rgb));
 		});
 	});
-	
+
 	test('new Color({rgb}) to HSL', function() {
 		rgb_hsl_test_vals.forEach(function(val) {
 			var rgb = val[0], hsl = val[1], col = new Color(rgb);
@@ -326,7 +326,7 @@ $(document).ready(function () {
 			deepEqual(col.rgb(), rgb);
 		});
 	});
-	
+
 	test('new Color({hsl}) to RGB', function() {
 		rgb_hsl_test_vals.forEach(function(val) {
 			var rgb = val[0], hsl = val[1], col = new Color(hsl);
@@ -334,7 +334,7 @@ $(document).ready(function () {
 			deepEqual(col.rgb(), rgb);
 		});
 	});
-	
+
 	test('new Color.brighten({percent})', function() {
 		brighten_test_vals.forEach(function(obj) {
 			//console.debug(obj);
@@ -342,8 +342,8 @@ $(document).ready(function () {
 			deepEqual(col.brighten(obj.pct).hex(), obj.expected);
 		});
 	});
-	
-	
+
+
 	test('new Color.darken({percent})', function() {
 		darken_test_vals.forEach(function(obj) {
 			var col = new Color(obj.col);

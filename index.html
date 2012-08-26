@@ -38,7 +38,7 @@
 <body>
 
 <div id="testarea"></div>
-	
+
 <script src="./lib/jquery.1.6.4.js"></script>
 <script src="./colors.js"></script>
 
@@ -50,7 +50,7 @@ $(document).ready(setupTestArea);
 function setupTestArea() {
 	var area = $('#testarea');
 	area.empty();
-	
+
 	var colors = {
 		'black': '#000',
 		'black_333': '#333',
@@ -58,7 +58,7 @@ function setupTestArea() {
 		'black_999': '#999',
 		'black_ccc': '#ccc',
 		'white': '#fff',
-		
+
 		'red': '#f00',
 		'green': '#0f0',
 		'blue': '#00f',
@@ -68,10 +68,10 @@ function setupTestArea() {
 	};
 	for(var name in colors) {
 		var col = new Color(colors[name]);
-		
+
 		area.append( getUL(colors[name], 'rgba(255, 255, 255, 0.N)').find('li').each(rgba_lighter).end() );
 		area.append( getUL(colors[name], 'Color.brighten(N)').find('li').each(lighter(col)).end() );
-		
+
 		area.append( getUL(colors[name], 'rgba(0, 0, 0, 0.N)').find('li').each(rgba_darker).end() );
 		area.append( getUL(colors[name], 'Color.darken(N)'  ).find('li').each(darker(col) ).end() );
 	}

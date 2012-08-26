@@ -1,4 +1,5 @@
 function Color(color) {
+	'use strict';
 	if (!color) {
 		throw new TypeError('color must not be null');
 	}
@@ -16,6 +17,7 @@ function Color(color) {
 }
 
 (function() {
+	'use strict';
 	Color.prototype.rgb = function() {
 		return {
 			r: this._rgb.r,
@@ -49,7 +51,7 @@ function Color(color) {
 			l: this._hsl.l
 		};
 	};
-	
+
 	Color.prototype.brighten = function(amount) {
 		amount /= 100;
 		var hsl = this.hsl();
@@ -57,7 +59,7 @@ function Color(color) {
 		hsl.l = Math.min(100, Math.max(0, hsl.l));
 		return new Color(hsl);
 	};
-	
+
 	Color.prototype.darken = function(amount) {
 		amount /= 100;
 		var hsl = this.hsl();
@@ -68,6 +70,7 @@ function Color(color) {
 })();
 
 (function() {
+	'use strict';
 	Color.format = function(color) {
 		if (Color.isRGB(color)) {
 			return {
@@ -78,7 +81,7 @@ function Color(color) {
 		}
 		return color;
 	};
-		
+
 	var hexdec = function(hex) {
 		return parseInt(hex, 16);
 	};
@@ -86,38 +89,38 @@ function Color(color) {
 		var rtrn = parseInt(dec, 10).toString(16);
 		return (rtrn.length === 2 ? rtrn : 0 + rtrn);
 	};
-	
+
 	Color.isHEX = function(value) {
-		return (typeof(value) === 'string' && value['search'])
-			&& (value.search(/^#?[a-fA-F\d]{6}$/) === 0 
-				|| value.search(/^#?[a-fA-F\d]{3}$/) === 0);
+		return (typeof(value) === 'string' && value.search) &&
+			(value.search(/^#?[a-fA-F\d]{6}$/) === 0 ||
+				value.search(/^#?[a-fA-F\d]{3}$/) === 0);
 	};
-	
+
 	Color.isRGB = function(value) {
-		if (!value || typeof(value) !== 'object' 
-		|| !value.hasOwnProperty('r') || value.r < 0 || value.r > 255
-		|| !value.hasOwnProperty('g') || value.g < 0 || value.g > 255
-		|| !value.hasOwnProperty('b') || value.b < 0 || value.b > 255 ) {
+		if (!value || typeof(value) !== 'object' ||
+		!value.hasOwnProperty('r') || value.r < 0 || value.r > 255 ||
+		!value.hasOwnProperty('g') || value.g < 0 || value.g > 255 ||
+		!value.hasOwnProperty('b') || value.b < 0 || value.b > 255 ) {
 			return false;
 		}
 		return true;
 	};
 	Color.isHSL = function(value) {
-		return (value.h !== null
-			&& value.s !== null
-			&& value.l !== null);
+		return (value.h !== null &&
+			value.s !== null &&
+			value.l !== null);
 	};
 	Color.isHSB = function(value) {
-		return (value.h !== null
-			&& value.s !== null
-			&& value.b !== null);
+		return (value.h !== null &&
+			value.s !== null &&
+			value.b !== null);
 	};
 	Color.isHSV = function(value) {
-		return (value.h !== null
-			&& value.s !== null
-			&& value.v !== null);
+		return (value.h !== null &&
+			value.s !== null &&
+			value.v !== null);
 	};
-	
+
 	Color.HEXtoRGB = function(hex) {
 		if (!Color.isHEX(hex)) {
 			throw new TypeError('Invalid param:' + hex);
@@ -138,8 +141,8 @@ function Color(color) {
 		} else {
 			throw new Error('Bad hex code');
 		}
-	}
-	
+	};
+
 	Color.RGBtoHEX = function(rgb) {
 		if (!Color.isRGB(rgb)) {
 			throw new TypeError('Invalid param');
@@ -151,21 +154,21 @@ function Color(color) {
 			dechex(rgb.b.toFixed(0))
 		].join('');
 	};
-	
+
 	Color.RGBtoHSL = function(rgb) {
 		if (!Color.isRGB(rgb)) {
 			throw new TypeError('Invalid param');
 		}
-		
+
 		var r = rgb.r / 255,
 			g = rgb.g / 255,
 			b = rgb.b / 255;
-			
+
 		var min = Math.min(r, Math.min(g, b));
 		var max = Math.max(r, Math.max(g, b));
-		
+
 		var h = 0, s = 0, l = (max + min) / 2;
-	
+
 		if (min != max) {
 			if (l < 0.5) {
 				s = (max - min) / (max + min);
@@ -188,16 +191,16 @@ function Color(color) {
 			l:parseInt((l*100).toFixed(0), 10)
 		};
 	};
-	
+
 	Color.HSLtoRGB = function(hsl) {
 		if (!Color.isHSL(hsl)) {
 			throw new TypeError('Invalid param');
 		}
-		
+
 		var h = hsl.h,
 			s = hsl.s / 100,
 			l = hsl.l / 100;
-			
+
 		if (s === 0) {
 			l *= 255;
 			return {
@@ -207,7 +210,7 @@ function Color(color) {
 			};
 		} else {
 			var temp2;
-			
+
 			if (l < 0.5) {
 				temp2 = l * (1.0 + s);
 			} else {
@@ -221,9 +224,9 @@ function Color(color) {
 				b: h - 1.0 / 3.0
 			};
 			var out = {'r':1, 'g':1, 'b':1};
-			for(v in out) {
+			for(var v in out) {
 				temp3[v] = (temp3[v] < 0 ? temp3[v] + 1.0 : (temp3[v] > 1 ? temp3[v] - 1.0 : temp3[v]));
-				
+
 				if (6.0 * temp3[v] < 1) {
 					out[v] = temp1 + (temp2 - temp1) * 6.0 * temp3[v];
 				} else if (2.0 * temp3[v] < 1) {
@@ -233,10 +236,10 @@ function Color(color) {
 				} else {
 					out[v] = temp1;
 				}
-				
+
 				out[v] = parseInt((out[v] * 255).toFixed(0), 10);
 			}
-			
+
 			return out;
 		}
 	};
