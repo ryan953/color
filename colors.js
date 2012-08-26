@@ -5,7 +5,7 @@ function Color(color) {
 	if (Color.isRGB(color)) {
 		this._rgb = color;
 	} else if (Color.isHEX(color)) {
-		this._hex = color;
+		this._hex = '#' + color.replace('#', '');
 		this._rgb = Color.HEXtoRGB(color);
 	} else if (Color.isHSL(color)) {
 		this._hsl = color;

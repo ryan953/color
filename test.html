@@ -311,6 +311,12 @@ $(document).ready(function () {
 			equals(col.hex(), hex);
 			deepEqual(col.rgb(), Color.format(rgb));
 		});
+
+		rgb_hex_test_vals.forEach(function(val) {
+			var hex = val[0].replace('#', ''), rgb = val[1], col = new Color(hex);
+			equals(col.hex(), '#' + hex);
+			deepEqual(col.rgb(), Color.format(rgb));
+		});
 	});
 	
 	test('new Color({rgb}) to HSL', function() {
